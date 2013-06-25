@@ -1,7 +1,7 @@
 phpinvoice
 ==========
 
-A free and opensouce invoicing system made in PHP + Bootstrap
+A free and opensouce invoicing system made in Bootstrap
 
 
 How to set up:
