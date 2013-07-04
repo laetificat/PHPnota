@@ -2,8 +2,8 @@
 session_start();
 
 if(empty($_SESSION['username'])) {
-        header("location:login.php");
-    }
+    header("location:login.php");
+}
 //////////////////////Importing SQL settings start//////////////////////
     require 'database_config.php';
 //////////////////////Importing SQL settings end//////////////////////
@@ -14,7 +14,6 @@ if(empty($_SESSION['username'])) {
 //////////////////////Connect to database end//////////////////////
 
 //////////////////////Defining variables start//////////////////////
-    //$companyName = "Laetificat";
     $getCompanyName = mysql_query("SELECT ownerOf FROM accounts WHERE email='".$_SESSION['username']."'");
         while($db_field = mysql_fetch_assoc($getCompanyName)){
             $companyName = ucfirst($db_field['ownerOf']);
@@ -24,15 +23,19 @@ if(empty($_SESSION['username'])) {
         $userName = "".$db_field['name']." ".$db_field['lastName']."";
     }
     if(isset($_POST['isNew'])) {
-        $new = $_POST['isNew'];
+        $new = "true";
     } else {
-        $new = "";
+        $new = "true"; //Change this to false once the sign up stuff works!
     }
     $getAdmin = mysql_query("SELECT isAdmin FROM accounts WHERE email='".$_SESSION['username']."'");
     while($db_field = mysql_fetch_assoc($getAdmin)){
         $isAdmin = $db_field['isAdmin'];
     }
 //////////////////////Defining variables end//////////////////////
+
+//////////////////////Language file selector//////////////////////
+    require '../language/language_settings.php';
+////////////////////Language file selector end////////////////////
 ?>
 
 <html lang="en"><head>
@@ -47,13 +50,6 @@ if(empty($_SESSION['username'])) {
     <style>
       body {
         padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
-        padding-left: 15px; /* 15px to make the side menu not all pasted to the side of the screen */
-        padding-right: 15px; /* Just to even stuff out */
-      }
-
-      .container {
-        margin-right: 0;
-        margin-left: auto;
       }
     </style>
     <link rel="stylesheet" href="../css/bootstrap-responsive.css">
@@ -88,8 +84,8 @@ if(empty($_SESSION['username'])) {
                 <li class="dropdown" id="fat-menu">
                   <a data-toggle="dropdown" class="dropdown-toggle" role="button" id="drop3" href="#"><?php echo $userName; ?> <b class="caret"></b></a>
                   <ul aria-labelledby="drop3" role="menu" class="dropdown-menu">
-                    <li role="presentation"><a href="#settings" tabindex="-1" role="menuitem" data-toggle="modal">Settings</a></li>
-                    <li role="presentation"><a href="logout.php" tabindex="-1" role="menuitem">Log out</a></li>
+                    <li role="presentation"><a href="#settings" tabindex="-1" role="menuitem" data-toggle="modal"><?php echo $language_Settings; ?></a></li>
+                    <li role="presentation"><a href="logout.php" tabindex="-1" role="menuitem"><?php echo $language_Logout; ?></a></li>
                     <?php
                         if($isAdmin == "1") {
                             echo "
@@ -109,6 +105,7 @@ if(empty($_SESSION['username'])) {
                   <a data-toggle="dropdown" class="dropdown-toggle" role="button" id="drop3" href="#">Quick menu <b class="caret"></b></a>
                   <ul aria-labelledby="drop3" role="menu" class="dropdown-menu">
                     <li role="presentation"><a href="new.php" tabindex="-1" role="menuitem">Create new invoice</a></li>
+                    <li role="presentation"><a href="newpurchase.php" tabindex="-1" role="menuitem">Create new purchase invoice</a></li>
                     <li role="presentation"><a href="#quickAddContact" tabindex="-1" role="menuitem" data-toggle="modal">Add new contact</a></li>
                   </ul>
                 </li>
@@ -124,70 +121,132 @@ if(empty($_SESSION['username'])) {
       </div>
     </div>
 
-<?php
-    if($new == "true") {
-        echo "
-    <div class=\"alert alert-success\">
-    <a href=\"#\" class=\"close\" data-dismiss=\"alert\">&times;</a>
-        Congratulations with your new account, we hope you'll enjoy your stay!
+    <div class="container-fluid">
+        <?php
+            if($new == "true") {
+                echo "
+            <div class=\"alert alert-success\">
+            <a href=\"#\" class=\"close\" data-dismiss=\"alert\">&times;</a>
+                Congratulations with your new account, we hope you'll enjoy your stay!
+            </div>
+            ";
+            } else {
+
+            }
+        ?>
+        <div class="alert alert">
+            <a href="#" class="close" data-dismiss="alert">&times;</a>
+            This build is very unstable and barely working, use with caution!
+        </div>
+        <div class="row-fluid">
+            <div class="span2">
+                <ul class="nav nav-tabs nav-stacked">
+                    <li class="active"><a href="#home">Overview</a></li>
+                    <li><a href="#about">Statistics</a></li>
+                    <li><a href="#contact">Turnover</a></li>
+                    <li><a href="#contact">Invoices</a></li>
+                    <li><a href="#contact">Purchase Invoices</a></li>
+                    <li><a href="#contact">Contacts</a></li>
+                </ul>
+            </div>
+            <div class="span10">
+                <!-- Modal settings -->
+                <div id="settings" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                        <h3 id="myModalLabel"><?php echo $language_Settings; ?></h3>
+                        </div>
+                        <div class="modal-body">
+                        <p>
+                            <h4><?php echo $language_LanguageSetting ?></h4>
+                            <form method="post" action="save.php">
+                              <input type="radio" name="group1" value="english"><?php echo $language_English ?><br />
+                              <input type="radio" name="group1" value="dutch"><?php echo $language_Dutch ?><br />
+                        </p>
+                        </div>
+                        <div class="modal-footer">
+                        <button class="btn" data-dismiss="modal" aria-hidden="true"><?php echo $language_CancelButton ?></button>
+                        <button class="btn btn-primary"><?php echo $language_SaveChanges ?></button></form>
+                    </div>
+                </div>
+                <!-- End Modal -->
+
+                <!-- Modal Quick add contact -->
+                <div id="quickAddContact" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                    <h3 id="myModalLabel">Add a contact</h3>
+                    </div>
+                    <div class="modal-body">
+                    <p>
+                        Test
+                    </p>
+                    </div>
+                    <div class="modal-footer">
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+                    <button class="btn btn-primary">Add contact</button>
+                    </div>
+                </div>
+                <!-- End Modal -->
+
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Status</th>
+                      <th>Date created</th>
+                      <th>Due date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>1</td>
+                      <td><span class="label label-success">PAID</span></td>
+                      <td>10/06/2013</td>
+                      <td>19/06/2013</td>
+                    </tr>
+                    <tr>
+                      <td>2</td>
+                      <td><span class="label label-success">PAID</span></td>
+                      <td>10/06/2013</td>
+                      <td>19/06/2013</td>
+                    </tr>
+                    <tr>
+                      <td>3</td>
+                      <td><span class="label label-success">PAID</span></td>
+                      <td>10/06/2013</td>
+                      <td>19/06/2013</td>
+                    </tr>
+                    <tr>
+                      <td>4</td>
+                      <td><span class="label label-info">WAITING FOR RESPONSE</span></td>
+                      <td>10/06/2013</td>
+                      <td>10/07/2013</td>
+                    </tr>
+                    <tr>
+                      <td>5</td>
+                      <td><span class="label label-warning">DUE DATE SOON</span></td>
+                      <td>10/06/2013</td>
+                      <td>30/06/2013</td>
+                    </tr>
+                    <tr>
+                      <td>6</td>
+                      <td><span class="label label-warning">DUE DATE SOON</span></td>
+                      <td>10/06/2013</td>
+                      <td>28/06/2013</td>
+                    </tr>
+                    <tr>
+                      <td>7</td>
+                      <td><span class="label label-important">3 DAYS LATE</span></td>
+                      <td>10/06/2013</td>
+                      <td>22/06/2013</td>
+                    </tr>
+                  </tbody>
+                </table>
+
+            </div>
+        </div>
     </div>
-    ";
-    } else {
-
-    }
-?>
-    <div class="alert alert">
-    <a href="#" class="close" data-dismiss="alert">&times;</a>
-        This build is very unstable and barely working, use with caution!
-    </div>
-
-    <ul class="nav nav-tabs nav-stacked pull-left">
-        <li><a href="#home">Overview</a></li>
-        <li><a href="#about">Statistics</a></li>
-        <li><a href="#contact">Turnover</a></li>
-        <li><a href="#contact">Invoices</a></li>
-        <li><a href="#contact">Contacts</a></li>
-    </ul>
-
-    <div class="container">
-
-    <!-- Modal settings -->
-        <div id="settings" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-        <h3 id="myModalLabel">Settings</h3>
-        </div>
-        <div class="modal-body">
-        <p>
-            Test
-        </p>
-        </div>
-        <div class="modal-footer">
-        <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-        <button class="btn btn-primary">Save changes</button>
-        </div>
-        </div>
-    <!-- End Modal -->
-
-    <!-- Modal Quick add contact -->
-        <div id="quickAddContact" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-        <h3 id="myModalLabel">Add a contact</h3>
-        </div>
-        <div class="modal-body">
-        <p>
-            Test
-        </p>
-        </div>
-        <div class="modal-footer">
-        <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-        <button class="btn btn-primary">Add contact</button>
-        </div>
-        </div>
-    <!-- End Modal -->
-
-    </div> <!-- /container -->
 
     <!-- Le javascript
     ================================================== -->

@@ -1,0 +1,14 @@
+<?php
+	//This is a language file for PHPinvoice();
+
+	//DUTCH
+
+	//////index.php//////
+	$language_Settings = "Instellingen";
+	$language_Logout = "Uitloggen";
+	$language_LanguageSetting = "Verander taal";
+	$language_Dutch = "Nederlands";
+	$language_English = "Engels";
+	$language_CancelButton = "Annuleren";
+	$language_SaveChanges = "Wijzigingen opslaan";
+?>
