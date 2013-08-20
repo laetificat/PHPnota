@@ -2,10 +2,10 @@
 session_start();
 
 if(empty($_SESSION['username'])) {
-    header("location:login.php");
+    header("location:../login.php");
 }
 //////////////////////Importing SQL settings start//////////////////////
-    require 'database_config.php';
+    require '../database_config.php';
 //////////////////////Importing SQL settings end//////////////////////
 
 //////////////////////Connect to database start//////////////////////
@@ -34,7 +34,7 @@ if(empty($_SESSION['username'])) {
 //////////////////////Defining variables end//////////////////////
 
 //////////////////////Language file selector//////////////////////
-    require '../language/language_settings.php';
+    require '../../language/language_settings.php';
 ////////////////////Language file selector end////////////////////
 ?>
 
@@ -46,24 +46,24 @@ if(empty($_SESSION['username'])) {
     <meta content="" name="author">
 
     <!-- Le styles -->
-    <link rel="stylesheet" href="../css/bootstrap.css">
+    <link rel="stylesheet" href="../../css/bootstrap.css">
     <style>
       body {
         padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
       }
     </style>
-    <link rel="stylesheet" href="../css/bootstrap-responsive.css">
+    <link rel="stylesheet" href="../../css/bootstrap-responsive.css">
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
-      <script src="../js/bootstrap.js"></script>
+      <script src="../../js/bootstrap.js"></script>
     <![endif]-->
 
     <!-- Fav and touch icons -->
 
     <?php
     //if(empty($_SESSION['username'])) {
-    //    header("location:login.php");
+    //    header("location:../login.php");
     ?>
   </head>
 
@@ -85,7 +85,7 @@ if(empty($_SESSION['username'])) {
                   <a data-toggle="dropdown" class="dropdown-toggle" role="button" id="drop3" href="#"><?php echo $userName; ?> <b class="caret"></b></a>
                   <ul aria-labelledby="drop3" role="menu" class="dropdown-menu">
                     <li role="presentation"><a href="#settings" tabindex="-1" role="menuitem" data-toggle="modal"><?php echo $language_Settings; ?></a></li>
-                    <li role="presentation"><a href="logout.php" tabindex="-1" role="menuitem"><?php echo $language_Logout; ?></a></li>
+                    <li role="presentation"><a href="../logout.php" tabindex="-1" role="menuitem"><?php echo $language_Logout; ?></a></li>
                     <?php
                         if($isAdmin == "1") {
                             echo "
@@ -104,16 +104,16 @@ if(empty($_SESSION['username'])) {
                 <li class="dropdown" id="fat-menu">
                   <a data-toggle="dropdown" class="dropdown-toggle" role="button" id="drop3" href="#">Quick menu <b class="caret"></b></a>
                   <ul aria-labelledby="drop3" role="menu" class="dropdown-menu">
-                    <li role="presentation"><a href="create-invoice" tabindex="-1" role="menuitem">Create new invoice</a></li>
+                    <li role="presentation"><a href="../create-invoice" tabindex="-1" role="menuitem">Create new invoice</a></li>
                     <li role="presentation"><a href="newpurchase.php" tabindex="-1" role="menuitem">Create new purchase invoice</a></li>
                     <li role="presentation"><a href="#quickAddContact" tabindex="-1" role="menuitem" data-toggle="modal">Add new contact</a></li>
-                    <li role="presentation"><a href="upload" tabindex="-1" role="menuitem">Upload invoice</a></li>
+                    <li role="presentation"><a href="../upload" tabindex="-1" role="menuitem">Upload invoice</a></li>
                   </ul>
                 </li>
             </ul>
 
             <ul class="nav">
-              <li class="active"><a href="#">Dashboard</a></li>
+              <li class="active"><a href="../">Dashboard</a></li>
               <li><a href="#about">About</a></li>
               <li><a href="#contact">Contact</a></li>
             </ul>
@@ -139,13 +139,32 @@ if(empty($_SESSION['username'])) {
             <a href="#" class="close" data-dismiss="alert">&times;</a>
             This build is very unstable and barely working, use with caution!
         </div>
+        <?php
+            if($_GET['error'] == 1){
+                echo "
+                    <div class=\"alert alert-info\">
+                        <a href=\"#\" class=\"close\" data-dismiss=\"alert\">&times;</a>
+                        File uploaded successfully!
+                    </div>
+                ";
+            } else if($_GET['error'] == 2) {
+                echo "
+                    <div class=\"alert alert-error\">
+                        <a href=\"#\" class=\"close\" data-dismiss=\"alert\">&times;</a>
+                        Something went wrong with uploading.
+                    </div>
+                ";
+            } else {
+
+            }
+        ?>
         <div class="row-fluid">
             <div class="span2">
                 <ul class="nav nav-tabs nav-stacked">
-                    <li class="active"><a href="#home">Overview</a></li>
+                    <li><a href="#home">Overview</a></li>
                     <li><a href="#about">Statistics</a></li>
                     <li><a href="#contact">Turnover</a></li>
-                    <li><a href="#">Invoices</a></li>
+                    <li class="active"><a href="#">Invoices</a></li>
                     <li><a href="#contact">Contacts</a></li>
                 </ul>
             </div>
@@ -189,60 +208,26 @@ if(empty($_SESSION['username'])) {
                 </div>
                 <!-- End Modal -->
 
-                <table class="table table-bordered">
-                  <thead>
+                <form class="tableAdd" action="sent.php" method="post" enctype="multipart/form-data">
+                <table>
                     <tr>
-                      <th>#</th>
-                      <th>Status</th>
-                      <th>Date created</th>
-                      <th>Due date</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>1</td>
-                      <td><span class="label label-success">PAID</span></td>
-                      <td>10/06/2013</td>
-                      <td>19/06/2013</td>
+                        <td>File:</td><td><input type="file" name="uploaded"></td>
                     </tr>
                     <tr>
-                      <td>2</td>
-                      <td><span class="label label-success">PAID</span></td>
-                      <td>10/06/2013</td>
-                      <td>19/06/2013</td>
+                        <td>Status:</td>
+                        <td>
+                            <select>
+                              <option value="volvo">Not paid</option>
+                              <option value="saab">Partially paid</option>
+                              <option value="mercedes">Paid</option>
+                            </select> 
+                        </td>
                     </tr>
                     <tr>
-                      <td>3</td>
-                      <td><span class="label label-success">PAID</span></td>
-                      <td>10/06/2013</td>
-                      <td>19/06/2013</td>
+                        <td><input type="submit" value="Upload!"></td>
                     </tr>
-                    <tr>
-                      <td>4</td>
-                      <td><span class="label label-info">WAITING FOR RESPONSE</span></td>
-                      <td>10/06/2013</td>
-                      <td>10/07/2013</td>
-                    </tr>
-                    <tr>
-                      <td>5</td>
-                      <td><span class="label label-warning">DUE DATE SOON</span></td>
-                      <td>10/06/2013</td>
-                      <td>30/06/2013</td>
-                    </tr>
-                    <tr>
-                      <td>6</td>
-                      <td><span class="label label-warning">DUE DATE SOON</span></td>
-                      <td>10/06/2013</td>
-                      <td>28/06/2013</td>
-                    </tr>
-                    <tr>
-                      <td>7</td>
-                      <td><span class="label label-important">3 DAYS LATE</span></td>
-                      <td>10/06/2013</td>
-                      <td>22/06/2013</td>
-                    </tr>
-                  </tbody>
                 </table>
+                </form>
 
             </div>
         </div>
@@ -252,7 +237,7 @@ if(empty($_SESSION['username'])) {
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="http://code.jquery.com/jquery.js"></script>
-    <script src="../js/bootstrap.min.js"></script>
+    <script src="../../js/bootstrap.min.js"></script>
   
 
 </body></html>

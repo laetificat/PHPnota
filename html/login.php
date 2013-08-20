@@ -8,6 +8,10 @@ session_start();
     $db_connect = mysql_connect($server, $user_name, $password);
     $db_select = mysql_select_db($database, $db_connect) or die("Can't connect to database");
 //////////////////////Connect to database end//////////////////////
+
+//////////////////////Language file selector//////////////////////
+    require '../language/language_settings.php';
+////////////////////Language file selector end////////////////////
 ?>
 
 <!DOCTYPE html>
@@ -100,37 +104,46 @@ session_start();
       <div class="control-group">
           <label class="control-label" for="inputName">First name</label>
           <div class="controls">
-           <input class="inputName" type="text" required>
+           <input class="inputName" type="text" name="inputName" required>
           </div>
         </div>
         <div class="control-group">
           <label class="control-label" for="inputLastName">Last name</label>
           <div class="controls">
-           <input class="inputLastName" type="text" required>
+           <input class="inputLastName" type="text" name="inputLastName" required>
           </div>
         </div>
         <div class="control-group">
           <label class="control-label" for="inputCompany">Company name</label>
           <div class="controls">
-           <input class="inputLastName" type="text" required>
+           <input class="inputLastName" type="text" name="inputCompany" required>
           </div>
         </div>
         <div class="control-group">
           <label class="control-label" for="inputEmail">Email</label>
           <div class="controls">
-           <input class="inputEmail" type="email" required>
+           <input class="inputEmail" type="email" name="inputEmail" required>
           </div>
         </div>
       <div class="control-group">
         <label class="control-label" for="inputPassword">Password</label>
         <div class="controls">
-          <input class="inputPassword" type="password" required>
+          <input class="inputPassword" type="password" name="inputPassword" required>
         </div>
       </div>
       <div class="control-group">
         <label class="control-label" for="inputPassword">Retype password</label>
         <div class="controls">
           <input class="inputPassword" type="password" required>
+        </div>
+      </div>
+      <div class="control-group">
+        <label class="control-label" for="preferedLang">Prefered Language</label>
+        <div class="controls">
+          <select name="preferedLang">
+             <option value="english">English</option>
+             <option value="dutch">Dutch</option>
+          </select>
         </div>
       </div>
       <div class="control-group">
