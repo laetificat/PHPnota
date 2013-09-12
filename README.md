@@ -1,4 +1,4 @@
-phpinvoice
+PHPnota
 ==========
 A free and opensouce invoicing system made in Twitter Bootstrap.
 
@@ -13,8 +13,8 @@ in the terms of the FPDF license because it's included.
 
 How to set up:
 ==========
-- Create a new database named phpinvoice
-- Import the phpinvoice.sql in your database
+- Create a new database named PHPnota
+- Import the PHPnota.sql in your database
 - Copy all the PHP files to your webserver
 - Edit database_config.php inside the html folder
 
